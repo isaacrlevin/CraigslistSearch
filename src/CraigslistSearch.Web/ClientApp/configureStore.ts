@@ -1,4 +1,4 @@
-import { createStore, applyMiddleware, compose, combineReducers, GenericStoreEnhancer, Store, StoreEnhancerStoreCreator, ReducersMapObject } from 'redux';
+import { createStore, applyMiddleware, compose, combineReducers, GenericStoreEnhancer, Store, StoreEnhancerStoreCreator, ReducersMapObject, Middleware,MiddlewareAPI } from 'redux';
 import thunk from 'redux-thunk';
 import { routerReducer, routerMiddleware } from 'react-router-redux';
 import * as StoreModule from './store';
@@ -10,7 +10,7 @@ export default function configureStore(history: History, initialState?: Applicat
     const windowIfDefined = typeof window === 'undefined' ? null : window as any;
     // If devTools is installed, connect to it
     const devToolsExtension = windowIfDefined && windowIfDefined.devToolsExtension as () => GenericStoreEnhancer;
-    const createStoreWithMiddleware = compose(
+    const createStoreWithMiddleware = compose<StoreEnhancerStoreCreator<any>>(
         applyMiddleware(thunk, routerMiddleware(history)),
         devToolsExtension ? devToolsExtension() : <S>(next: StoreEnhancerStoreCreator<S>) => next
     )(createStore);
@@ -29,7 +29,6 @@ export default function configureStore(history: History, initialState?: Applicat
 
     return store;
 }
-
 function buildRootReducer(allReducers: ReducersMapObject) {
     return combineReducers<ApplicationState>(Object.assign({}, allReducers, { routing: routerReducer }));
 }

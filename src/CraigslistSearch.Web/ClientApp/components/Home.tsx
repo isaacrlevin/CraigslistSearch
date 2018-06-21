@@ -58,6 +58,13 @@ class Home extends React.Component<HomeProps, {}> {
 
     constructor() {
         super();
+        this.filter = {
+            age: 0,
+            location: '',
+            amount: [0],
+            category: '',
+            searchText: ''
+        };
         this.options = {
             defaultSortName: 'title',  // default sort column name
             defaultSortOrder: 'asc'  // default sort order
@@ -125,7 +132,7 @@ class Home extends React.Component<HomeProps, {}> {
     public render() {
 
         return <div>
-           
+
             <div className="row col-md-12 col-md-offset-2">
                 <h2>Search Craigslist</h2>
                 <div className="col-xs-4">
@@ -197,7 +204,7 @@ class Home extends React.Component<HomeProps, {}> {
             table = <div><i className="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i></div>
         }
         else {
-            table =                
+            table =
                 <BootstrapTable data={this.props.results} options={this.options} striped hover pagination>
                 <TableHeaderColumn dataField='location' dataSort>Location</TableHeaderColumn>
                 <TableHeaderColumn dataField='title' dataSort dataFormat={this.linkFormatter} isKey>Title</TableHeaderColumn>
@@ -214,7 +221,7 @@ class Home extends React.Component<HomeProps, {}> {
                     message = this.props.results.length + " Listings Found";
                 }
             }
-          
+
         }
         return <div>
             <div className="row">

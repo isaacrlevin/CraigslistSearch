@@ -105,10 +105,8 @@ namespace CraigslistSearch.Web
                     });
                 }
             }
-            catch (Exception ex)
-            {
-                var message = "";
-            }
+            catch
+            { }
             return clData;
         }
     }
