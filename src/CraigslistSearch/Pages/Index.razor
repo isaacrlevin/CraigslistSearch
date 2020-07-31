@@ -1,0 +1,206 @@
+﻿@page "/"
+
+@using System.ComponentModel.DataAnnotations
+@using CraigslistSearch.Models
+@using Microsoft.AspNetCore.Hosting;
+@inject IWebHostEnvironment hostingEnvironment
+@inject CraigslistSearch.Services.SearchService searchService
+
+<div class="container-fluid">
+    <h2>Search Craigslist</h2>
+    <p>Search the Last 7 days of Craigslist</p>
+    <EditForm Model="@Filter" OnValidSubmit="@HandleValidSubmit" OnInvalidSubmit="@HandleInvalidSubmit">
+        <DataAnnotationsValidator />
+
+        <div class="row">
+            <div class="col-sm" style="padding-top:8px">
+                <TelerikTextBox Width="75%" Label="Search Text (required)" @bind-Value="@Filter.SearchText" />
+            </div>
+            <div class="col-sm">
+                <label for="cat">Category:</label>
+                <select style="width:75%" class="form-control" id="cat" @onchange=CategoryChanged>
+                    @foreach (var category in Categories)
+                    {
+                        <option value=@category.Abbreviation>@category.Description</option>
+                    }
+                </select>
+            </div>
+            <div class="col-sm">
+                <label for="products-multiselect">Select Products:</label>
+                <div class="d-flex">
+
+                    <TelerikMultiSelect Width="75%" Data="@Locations" @bind-Value="@Filter.Location" OnChange="@LocationChanged" ValueField="@nameof(Location.City)" TextField="@nameof(Location.City)" Filterable="true" Placeholder="Locations (required)">
+                    </TelerikMultiSelect>
+
+                </div>
+            </div>
+        </div>
+        <br />
+        <br />
+        <br />
+        <div class="row">
+            <TelerikButton ButtonType="@ButtonType.Submit" Primary="true">Search Listings</TelerikButton>
+        </div>
+    </EditForm>
+</div>
+
+<SpinLoader IsLoading="@IsLoading">
+    <LoadingTemplate>
+        <Chase Color="#000000" Size="100px" class="my-spinner" Center="true" />
+        <br />
+        <div class="centering text-center">
+            <h1>This may take a bit</h1>
+
+            @{
+                var text = "";
+                if (Filter.Location.Count > 1)
+                {
+                    text = $"{@Filter.Location.Count} locations";
+                }
+                else
+                {
+                    if (Filter.Location.Contains("all"))
+                    {
+                        text = $"{Locations.Count} locations";
+                    }
+                    else
+                    {
+                        text = $"{@Filter.Location.Count} location";
+                    }
+                }
+                <h3>Searching @text</h3>
+            }
+        </div>
+    </LoadingTemplate>
+    <ContentTemplate>
+        @if (SearchResults == null)
+        { }
+        else
+        {
+            @if (SearchResults.Count > 0)
+            {
+                <br />
+                <div class="centering text-center">
+                    <h2>Found @SearchResults.Count Items</h2>
+                </div>
+                <br />
+                <TelerikGrid Data=@SearchResults
+                             Pageable="true"
+                             Sortable="true"
+                             FilterMode="GridFilterMode.FilterRow"
+                             Resizable="true"
+                             SelectionMode="GridSelectionMode.None"
+                             PageSize="15">
+                    <GridColumns>
+                        <GridColumn Field="@nameof(SearchResponse.Location)" />
+                        <GridColumn Field="@nameof(SearchResponse.Title)" Title="Cost">
+                            <Template>
+                                @{
+                                    var url = (context as SearchResponse)?.ExternalUrl;
+                                    var title = (context as SearchResponse)?.Title;
+                                    <a class="link" href="@url" target="_blank">@title</a>
+                                }
+                            </Template>
+                        </GridColumn>
+                        <GridColumn Field="@nameof(SearchResponse.TimeStampDate)" Title="Date" Editable="false" />
+                    </GridColumns>
+                </TelerikGrid>
+            }
+            else
+            {
+                <div class="centering text-center">
+                    <h1>No Results Found</h1>
+                </div>
+            }
+        }
+    </ContentTemplate>
+</SpinLoader>
+
+@code{
+
+    private Filter Filter = new Filter();
+
+    private int Age { get; set; }
+    private List<Category> Categories { get; set; }
+
+    private List<Location> Locations { get; set; }
+
+    private string SelectedCategory { get; set; }
+
+    private string SearchText { get; set; }
+
+    private List<SearchResponse> SearchResults { get; set; }
+
+    private bool IsLoading = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Filter.Location = new List<string>();
+        //SearchResults = new List<SearchResponse>();
+        string webRootPath = hostingEnvironment.WebRootPath;
+
+        string cjson = System.IO.File.ReadAllText($"{webRootPath}/categories.json");
+        Categories = System.Text.Json.JsonSerializer.Deserialize<List<Category>>(cjson);
+
+        string ljson = System.IO.File.ReadAllText($"{webRootPath}/locations.json");
+        Locations = System.Text.Json.JsonSerializer.Deserialize<List<Location>>(ljson);
+
+        Locations.Insert(0, new Location
+        {
+            City = "all"
+        });
+
+        SelectedCategory = Categories.First().Abbreviation;
+    }
+
+    async void HandleValidSubmit()
+    {
+        await Search();
+    }
+
+    void HandleInvalidSubmit()
+    {
+
+    }
+
+
+    protected async Task Search()
+    {
+        SearchResults = new List<SearchResponse>();
+
+        Filter.Category = SelectedCategory;
+
+
+        Filter.Age = 7;
+
+        IsLoading = true;
+
+        SearchResults = await searchService.GetItems(Filter);
+
+        IsLoading = false;
+
+        StateHasChanged();
+    }
+
+    private void LocationChanged()
+    {
+        List<string> newLoc = new List<string>();
+        if (Filter.Location.Contains("all"))
+        {
+            newLoc.Add("all");
+        }
+        else
+        {
+            newLoc = Filter.Location.ToList();
+        }
+
+        Filter.Location = newLoc;
+    }
+
+    private void CategoryChanged(ChangeEventArgs e)
+    {
+        SelectedCategory = e.Value.ToString();
+    }
+
+
+}

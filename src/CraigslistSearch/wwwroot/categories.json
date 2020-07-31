@@ -1,0 +1,178 @@
+[
+  {
+    "Description": "all for sale",
+    "Abbreviation": "sss"
+  },
+  {
+    "Description": "for sale - art  '&' crafts",
+    "Abbreviation": "art"
+  },
+  {
+    "Description": "for sale - auto parts",
+    "Abbreviation": "pts"
+  },
+  {
+    "Description": "for sale - baby  '&' kid stuff",
+    "Abbreviation": "bab"
+  },
+  {
+    "Description": "for sale - barter",
+    "Abbreviation": "bar"
+  },
+  {
+    "Description": "for sale - bicycles",
+    "Abbreviation": "bik"
+  },
+  {
+    "Description": "for sale - boats",
+    "Abbreviation": "boa"
+  },
+  {
+    "Description": "for sale - books",
+    "Abbreviation": "bks"
+  },
+  {
+    "Description": "for sale - business",
+    "Abbreviation": "bfs"
+  },
+  {
+    "Description": "for sale - cars  '&' trucks - all",
+    "Abbreviation": "cta"
+  },
+  {
+    "Description": "for sale - cars  '&' trucks - by dealer",
+    "Abbreviation": "ctd"
+  },
+  {
+    "Description": "for sale - cars  '&' trucks - by owner",
+    "Abbreviation": "cto"
+  },
+  {
+    "Description": "for sale - cds / dvds / vhs",
+    "Abbreviation": "emd"
+  },
+  {
+    "Description": "for sale - clothing",
+    "Abbreviation": "clo"
+  },
+  {
+    "Description": "for sale - collectibles",
+    "Abbreviation": "clt"
+  },
+  {
+    "Description": "for sale - computers  '&' tech",
+    "Abbreviation": "sys"
+  },
+  {
+    "Description": "for sale - electronics",
+    "Abbreviation": "ele"
+  },
+  {
+    "Description": "for sale - farm  '&' garden",
+    "Abbreviation": "grd"
+  },
+  {
+    "Description": "for sale - free stuff",
+    "Abbreviation": "zip"
+  },
+  {
+    "Description": "for sale - furniture - all",
+    "Abbreviation": "fua"
+  },
+  {
+    "Description": "for sale - furniture - by dealer",
+    "Abbreviation": "fud"
+  },
+  {
+    "Description": "for sale - furniture - by owner",
+    "Abbreviation": "fuo"
+  },
+  {
+    "Description": "for sale - games  '&' toys",
+    "Abbreviation": "tag"
+  },
+  {
+    "Description": "for sale - garage sales",
+    "Abbreviation": "gms"
+  },
+  {
+    "Description": "for sale - general",
+    "Abbreviation": "for"
+  },
+  {
+    "Description": "for sale - household",
+    "Abbreviation": "hsh"
+  },
+  {
+    "Description": "for sale - items wanted",
+    "Abbreviation": "wan"
+  },
+  {
+    "Description": "for sale - jewelry",
+    "Abbreviation": "jwl"
+  },
+  {
+    "Description": "for sale - materials",
+    "Abbreviation": "mat"
+  },
+  {
+    "Description": "for sale - motorcycles/scooters",
+    "Abbreviation": "mcy"
+  },
+  {
+    "Description": "for sale - musical instruments",
+    "Abbreviation": "msg"
+  },
+  {
+    "Description": "for sale - photo/video",
+    "Abbreviation": "pho"
+  },
+  {
+    "Description": "for sale - recreational vehicles",
+    "Abbreviation": "rvs"
+  },
+  {
+    "Description": "for sale - sporting goods",
+    "Abbreviation": "spo"
+  },
+  {
+    "Description": "for sale - tickets",
+    "Abbreviation": "tix"
+  },
+  {
+    "Description": "for sale - tools",
+    "Abbreviation": "tls"
+  },
+  {
+    "Description": "all community",
+    "Abbreviation": "ccc"
+  },
+  {
+    "Description": "all event",
+    "Abbreviation": "eee"
+  },
+  {
+    "Description": "all gigs",
+    "Abbreviation": "ggg"
+  },
+  {
+    "Description": "all housing",
+    "Abbreviation": "hhh"
+  },
+  {
+    "Description": "all jobs",
+    "Abbreviation": "jjj"
+  },
+  {
+    "Description": "all personals",
+    "Abbreviation": "cas"
+  },
+  {
+    "Description": "all resume",
+    "Abbreviation": "res"
+  },
+  {
+    "Description": "all services offered",
+    "Abbreviation": "bbb"
+  }
+]
