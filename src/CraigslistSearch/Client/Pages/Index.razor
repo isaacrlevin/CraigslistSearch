@@ -1,10 +1,9 @@
 ﻿@page "/"
 
 @using System.ComponentModel.DataAnnotations
-@using CraigslistSearch.Models
-@using Microsoft.AspNetCore.Hosting;
-@inject IWebHostEnvironment hostingEnvironment
-@inject CraigslistSearch.Services.SearchService searchService
+@using CraigslistSearch.Shared.Models
+@using System.Net.Http.Headers;
+@inject HttpClient Http
 
 <div class="container-fluid">
     <h2>Search Craigslist</h2>
@@ -135,15 +134,14 @@
 
     protected override async Task OnInitializedAsync()
     {
+        Categories = new List<Category>();
+        Locations = new List<Location>();
         Filter.Location = new List<string>();
         //SearchResults = new List<SearchResponse>();
-        string webRootPath = hostingEnvironment.WebRootPath;
 
-        string cjson = System.IO.File.ReadAllText($"{webRootPath}/categories.json");
-        Categories = System.Text.Json.JsonSerializer.Deserialize<List<Category>>(cjson);
 
-        string ljson = System.IO.File.ReadAllText($"{webRootPath}/locations.json");
-        Locations = System.Text.Json.JsonSerializer.Deserialize<List<Location>>(ljson);
+        Categories = await Http.GetFromJsonAsync<List<Category>>("https://craigslistsearch.blob.core.windows.net/json/categories.json");
+        Locations = await Http.GetFromJsonAsync<List<Location>>("https://craigslistsearch.blob.core.windows.net/json/locations.json");
 
         Locations.Insert(0, new Location
         {
@@ -175,7 +173,15 @@
 
         IsLoading = true;
 
-        SearchResults = await searchService.GetItems(Filter);
+        var json = System.Text.Json.JsonSerializer.Serialize(Filter);
+        var content = new StringContent(json);
+        content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+        // CALL AZURE FUNCTION
+        var response = await Http.PostAsJsonAsync("http://localhost:7071/api/GetResults", Filter);
+
+        SearchResults = System.Text.Json.JsonSerializer.Deserialize<List<SearchResponse>>(await response.Content.ReadAsStringAsync());
+
+
 
         IsLoading = false;
 
@@ -201,6 +207,4 @@
     {
         SelectedCategory = e.Value.ToString();
     }
-
-
 }

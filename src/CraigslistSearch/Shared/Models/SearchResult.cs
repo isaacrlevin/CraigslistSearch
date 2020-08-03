@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
-namespace CraigslistSearch.Models
+namespace CraigslistSearch.Shared.Models
 {
     public class SearchResponse
     {
+        [JsonPropertyName("body")]
         public string Body { get; set; }
+        [JsonPropertyName("timeStampDate")]
         public DateTime? TimeStampDate { get; set; }
+        [JsonPropertyName("title")]
         public string Title { get; set; }
         public float Price { get; set; }
+        [JsonPropertyName("location")]
         public string Location { get; set; }
+        [JsonPropertyName("externalUrl")]
         public string ExternalUrl { get; set; }
     }
 

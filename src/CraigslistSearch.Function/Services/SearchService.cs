@@ -1,19 +1,17 @@
-﻿using CraigslistSearch.Models;
-using Microsoft.AspNetCore.Hosting;
+﻿using CraigslistSearch.Shared.Models;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Net.NetworkInformation;
-using System.ServiceModel.Syndication;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Xml;
 
-namespace CraigslistSearch.Services
+namespace CraigslistSearch.Function.Services
 {
     public static class Extenstions
     {
@@ -38,19 +36,16 @@ namespace CraigslistSearch.Services
 
     public class SearchService
     {
-        private readonly IWebHostEnvironment _hostingEnvironment;
+        private readonly HttpClient Http;
 
-        public SearchService(IWebHostEnvironment hostingEnvironment)
+        public SearchService(HttpClient _http)
         {
-
-            _hostingEnvironment = hostingEnvironment;
+            Http = _http;
+            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
         }
-
         public async Task<List<SearchResponse>> GetItems(Filter filter)
         {
-            string webRootPath = _hostingEnvironment.WebRootPath;
-            string json = System.IO.File.ReadAllText($"{webRootPath}/locations.json");
-            var list = JsonSerializer.Deserialize<List<Location>>(json);
+            var list = System.Text.Json.JsonSerializer.Deserialize<List<Location>>(await Http.GetStringAsync("https://craigslistsearch.blob.core.windows.net/json/locations.json"));
 
             List<SearchResponse> clData = new List<SearchResponse>();
             DateTime now = DateTime.Now;
@@ -61,11 +56,16 @@ namespace CraigslistSearch.Services
                 list = list.Where(a => filter.Location.Contains(a.City)).ToList();
             }
 
-            await GetResults(unique, filter, list).AsyncParallelForEach(async entry =>
-            {                
-                clData.AddRange(entry);
-            }, 1000, TaskScheduler.FromCurrentSynchronizationContext()
-            );
+
+
+            //await GetResults(unique, filter, list).AsyncParallelForEach(async entry =>
+            //{
+            //    clData.AddRange(entry);
+            //}, 1000, TaskScheduler.FromCurrentSynchronizationContext()
+            //);
+
+            clData = GetResults(unique, filter, list);
+
 
             double span = DateTime.Now.Subtract(now).TotalSeconds;
             DateTime date = DateTime.Now.AddDays(Convert.ToInt32(filter.Age) * -1);
@@ -73,14 +73,16 @@ namespace CraigslistSearch.Services
             return clData.Where(a => a.TimeStampDate >= date).OrderBy(a => a.Location).ThenByDescending(a => a.TimeStampDate).ToList();
         }
 
-        private async IAsyncEnumerable<List<SearchResponse>> GetResults(ConcurrentDictionary<string, SearchResponse> unique, Filter userVM, List<Location> list)
+        //private async IAsyncEnumerable<List<SearchResponse>> GetResults(ConcurrentDictionary<string, SearchResponse> unique, Filter userVM, List<Location> list)
+        private List<SearchResponse> GetResults(ConcurrentDictionary<string, SearchResponse> unique, Filter userVM, List<Location> list)
         {
             HttpClient client = new HttpClient();
-            foreach (var str in list)
+            List<SearchResponse> clData = new List<SearchResponse>();
+            Parallel.ForEach(list, str =>
             {
                 Console.WriteLine($"Searching : {str.City}");
                 string url;
-                List<SearchResponse> clData = new List<SearchResponse>();
+               
                 try
                 {
                     if (str != null)
@@ -88,7 +90,7 @@ namespace CraigslistSearch.Services
                         url = str.Url.Replace(" ", string.Empty) + "search/" + (userVM.Category ?? "sss") + "/?query=" + userVM.SearchText + "&format=rss";
 
 
-                        var rss = await client.GetStreamAsync(url);
+                        var rss =  client.GetStreamAsync(url).Result;
 
                         XmlDocument xmlDoc = new XmlDocument();
                         xmlDoc.Load(rss);
@@ -137,9 +139,9 @@ namespace CraigslistSearch.Services
                 catch (Exception e)
                 {
                     var foo = e;
-                }
-                yield return clData.Where(a => a != null).ToList() ;
-            }
+                }                
+            });
+            return clData.Where(a => a != null).ToList();
         }
     }
 }
