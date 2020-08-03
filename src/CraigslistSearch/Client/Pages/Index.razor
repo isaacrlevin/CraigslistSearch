@@ -137,8 +137,6 @@
         Categories = new List<Category>();
         Locations = new List<Location>();
         Filter.Location = new List<string>();
-        //SearchResults = new List<SearchResponse>();
-
 
         Categories = await Http.GetFromJsonAsync<List<Category>>("https://craigslistsearch.blob.core.windows.net/json/categories.json");
         Locations = await Http.GetFromJsonAsync<List<Location>>("https://craigslistsearch.blob.core.windows.net/json/locations.json");
@@ -177,7 +175,8 @@
         var content = new StringContent(json);
         content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
         // CALL AZURE FUNCTION
-        var response = await Http.PostAsJsonAsync("http://localhost:7071/api/GetResults", Filter);
+       
+        var response = await Http.PostAsJsonAsync("https://craigslistsearch-function.azurewebsites.net/api/GetResults?code=kNaq8jQ2/z/MahQ1a7qoKvuCakRopWcCRNPpU4CBUDUTLWVsdbKaCQ==", Filter);
 
         SearchResults = System.Text.Json.JsonSerializer.Deserialize<List<SearchResponse>>(await response.Content.ReadAsStringAsync());
 

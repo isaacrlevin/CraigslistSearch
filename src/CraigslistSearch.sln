@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0454CFB8-29B8-4404-859A-619F90C05725}"
 	ProjectSection(SolutionItems) = preProject
 		..\.gitignore = ..\.gitignore
+		..\.github\workflows\azure-static-web-apps-witty-flower-0e4bb791e.yml = ..\.github\workflows\azure-static-web-apps-witty-flower-0e4bb791e.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CraigslistSearch.Client", "CraigslistSearch\Client\CraigslistSearch.Client.csproj", "{A866D6FD-72AF-47F7-8E87-E66E1E8B3D59}"

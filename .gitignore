@@ -239,3 +239,4 @@ _Pvt_Extensions
 /src/CraigslistSearch.Web/node_modules
 /src/CraigslistSearch.Web/wwwroot/dist
 /src/CraigslistSearch.Web/package-lock.json
+/src/CraigslistSearch/Client/published

@@ -2,6 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AzureFunctionsVersion>v3</AzureFunctionsVersion>
+    <UserSecretsId>30c54981-1db1-421d-9ec0-1530983c6737</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.0.0" />
@@ -20,12 +21,4 @@
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
     </None>
   </ItemGroup>
-
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy $(OutDir)$(ProjectName).deps.json $(OutDir)bin\function.deps.json" />
-  </Target>
-  <Target Name="PostPublish" AfterTargets="AfterPublish">
-    <Exec Command="copy $(PublishDir)$(ProjectName).deps.json $(PublishDir)bin\function.deps.json" />
-    <Exec Command="xcopy $(PublishDir)runtimes $(PublishDir)bin\runtimes\ /e" />
-  </Target>
 </Project>
