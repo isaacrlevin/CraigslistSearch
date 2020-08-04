@@ -17,11 +17,11 @@ jobs:
     # Note: Using varibles gives you the greatest level of control over the system, no need to worry about envVar format
     # Set the varible name and values, then use them throughout the jobs for that agent's OS. - Lance M.
     env:
-      NuGetConfig_Path: src\nuget.config
-      Solution_Path: src\CraigslistSearch.sln
-      Client_Project_Path: src\CraigslistSearch\Client\CraigslistSearch.Client.csproj
-      Function_Project_Path: src\CraigslistSearch.Function\CraigslistSearch.Function.csproj
-      App_Location_Path: src\CraigslistSearch\Client\published\wwwroot
+      NuGetConfig_Path: src/nuget.config
+      Solution_Path: src/CraigslistSearch.sln
+      Client_Project_Path: src/CraigslistSearch/Client/CraigslistSearch.Client.csproj
+      Function_Project_Path: src/CraigslistSearch.Function/CraigslistSearch.Function.csproj
+      App_Location_Path: src/CraigslistSearch/Client/published/wwwroot
       TELERIK_FEED_USERNAME: ${{ secrets.UserName }}
       TELERIK_FEED_PASSWORD: ${{ secrets.Password }}
     
@@ -42,7 +42,7 @@ jobs:
 
       # Note: Invoke dotnet restore and point to nuget.config - Lance M.
       - name: NuGet Restore
-        run: dotnet restore $env:Solution_Path --configfile=$env:NuGetConfig_Path --runtime win-${{ matrix.targetplatform }}
+        run: dotnet restore $env:Client_Project_Path --configfile=$env:NuGetConfig_Path --runtime win-${{ matrix.targetplatform }}
         
       - name: Build App
         run: dotnet publish -c Release -o published $env:Client_Project_Path
