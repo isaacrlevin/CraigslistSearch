@@ -13,6 +13,7 @@ jobs:
   build_and_deploy_job:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
+
     name: Build and Deploy Job
     steps:
       - uses: actions/checkout@v2
@@ -27,11 +28,15 @@ jobs:
         with:
           # NuGet version to install. Can be `latest`, `preview`, a concrete version like `5.3.1`, or a semver range specifier like `5.x`.
           nuget-version: 'latest'
-        
-      
-      - name: Add Telerik Feed
-        run: nuget sources add -name "Telerik" -Source https://nuget.telerik.com/nuget -StorePasswordInClearText -Username ${{ secrets.UserName }} -Password ${{ secrets.Password }}
 
+      # Note: Invoke dotnet restore and point to nuget.config - Lance M.
+      - name: NuGet Restore
+        env:
+          # Note: set the environment varibles defined in nuget.config using the values in secrets - Lance M.
+          TELERIK_FEED_USERNAME: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_WITTY_FLOWER_0E4BB791E  }}
+          TELERIK_FEED_PASSWORD: ${{ secrets.TelerikPassword }}
+        run: dotnet restore src/CraigslistSearch/Client/CraigslistSearch.Client.csproj --configfile=src/nuget.config --runtime linux-x64
+        
       - name: Build App
         run: dotnet publish -c Release -o published src/CraigslistSearch/Client/CraigslistSearch.Client.csproj
 
@@ -44,9 +49,9 @@ jobs:
           action: "upload"
           ###### Repository/Build Configurations - These values can be configured to match you app requirements. ######
           # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
-          app_location: "/src/CraigslistSearch/Client/published/wwwroot" # App source code path
+          app_location: "src/CraigslistSearch/Client/published/wwwroot" # App source code path
           api_location: "api" # Api source code path - optional
-          app_artifact_location: "/src/CraigslistSearch/Client/published/wwwroot" # Built app content directory - optional
+          app_artifact_location: "src/CraigslistSearch/Client/published/wwwroot" # Built app content directory - optional
           ###### End of Repository/Build Configurations ######
 
   close_pull_request_job:
