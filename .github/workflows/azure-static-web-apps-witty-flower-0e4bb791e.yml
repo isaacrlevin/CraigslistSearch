@@ -38,7 +38,7 @@ jobs:
         run: dotnet restore src/CraigslistSearch/Client/CraigslistSearch.Client.csproj --configfile=src/nuget.config --runtime linux-x64
         
       - name: Build App
-        run: dotnet publish -c Release -o published src/CraigslistSearch/Client/CraigslistSearch.Client.csproj
+        run: dotnet publish -c Release -o src/CraigslistSearch/Client/published src/CraigslistSearch/Client/CraigslistSearch.Client.csproj
 
       - name: Build And Deploy
         id: builddeploy
@@ -49,9 +49,8 @@ jobs:
           action: "upload"
           ###### Repository/Build Configurations - These values can be configured to match you app requirements. ######
           # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
-          app_location: "/home/runner/work/CraigslistSearch/CraigslistSearch/published/wwwroot" # App source code path
-          api_location: "api" # Api source code path - optional
-          app_artifact_location: "/home/runner/work/CraigslistSearch/CraigslistSearch/published/wwwroot" # Built app content directory - optional
+          app_location: "src/CraigslistSearch/Client/published/wwwroot" # App source code path
+          app_artifact_location: "src/CraigslistSearch/Client/published/wwwroot" # Built app content directory - optional
           ###### End of Repository/Build Configurations ######
 
   close_pull_request_job:
