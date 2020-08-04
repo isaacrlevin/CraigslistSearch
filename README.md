@@ -1,8 +1,3 @@
 # CraigslistSearch
-Server Side Blazor App to Search Craigslist
+Client Side Blazor App to Search Craigslist with Azure Functions Backend
 
-## Steps to Run
- - Clone Repo  
- - cd to Web Project
- - dotnet run
- - Navigate Browswer to Address in window
