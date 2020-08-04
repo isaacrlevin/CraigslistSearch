@@ -17,23 +17,23 @@ jobs:
         # See https://docs.microsoft.com/en-us/dotnet/core/rid-catalog
         targetplatform: [x64]
 
-  # Note: Using varibles gives you the greatest level of control over the system, no need to worry about envVar format
-  # Set the varible name and values, then use them throughout the jobs for that agent's OS. - Lance M.
-  env:
-        NuGetConfig_Path: src/nuget.config
-        Solution_Path: src/CraigslistSearch.sln
-        Client_Project_Path: src/CraigslistSearch/Client/CraigslistSearch.Client.csproj
-        Function_Project_Path: src/CraigslistSearch.Function/CraigslistSearch.Function.csproj
-        App_Location_Path: src/CraigslistSearch/Client/published/wwwroot
-        TELERIK_FEED_USERNAME: ${{ secrets.UserName }}
-        TELERIK_FEED_PASSWORD: ${{ secrets.Password }}
-
   build_and_deploy_job:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
 
     name: Build and Deploy Job
     steps:
+      # Note: Using varibles gives you the greatest level of control over the system, no need to worry about envVar format
+      # Set the varible name and values, then use them throughout the jobs for that agent's OS. - Lance M.
+      env:
+            NuGetConfig_Path: src/nuget.config
+            Solution_Path: src/CraigslistSearch.sln
+            Client_Project_Path: src/CraigslistSearch/Client/CraigslistSearch.Client.csproj
+            Function_Project_Path: src/CraigslistSearch.Function/CraigslistSearch.Function.csproj
+            App_Location_Path: src/CraigslistSearch/Client/published/wwwroot
+            TELERIK_FEED_USERNAME: ${{ secrets.UserName }}
+            TELERIK_FEED_PASSWORD: ${{ secrets.Password }}
+
       - uses: actions/checkout@v2
 
       - name: Setup .NET SDK
