@@ -33,7 +33,7 @@ jobs:
       - name: NuGet Restore
         env:
           # Note: set the environment varibles defined in nuget.config using the values in secrets - Lance M.
-          TELERIK_FEED_USERNAME: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_WITTY_FLOWER_0E4BB791E  }}
+          TELERIK_FEED_USERNAME: ${{ secrets.TelerikUserName  }}
           TELERIK_FEED_PASSWORD: ${{ secrets.TelerikPassword }}
         run: dotnet restore src/CraigslistSearch/Client/CraigslistSearch.Client.csproj --configfile=src/nuget.config --runtime linux-x64
         
