@@ -9,6 +9,10 @@ on:
     branches:
       - main
 
+env:
+  AZURE_FUNCTIONAPP_NAME: craigslistsearch-function  # set this to your application's name
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: 'src/CraigslistSearch.Function/CraigslistSearch.Function.csproj'    # set this to the path to your web app project, defaults to the repository root
+
 jobs:
   build_and_deploy_job:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
@@ -22,7 +26,7 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 3.1.301
-          
+
       - name: Setup NuGet.exe for use with actions
         uses: NuGet/setup-nuget@v1.0.2
         with:
@@ -36,9 +40,24 @@ jobs:
           TELERIK_FEED_USERNAME: ${{ secrets.TelerikUserName  }}
           TELERIK_FEED_PASSWORD: ${{ secrets.TelerikPassword }}
         run: dotnet restore src/CraigslistSearch/Client/CraigslistSearch.Client.csproj --configfile=src/nuget.config --runtime linux-x64
-        
+
       - name: Build App
         run: dotnet publish -c Release -o src/CraigslistSearch/Client/published src/CraigslistSearch/Client/CraigslistSearch.Client.csproj
+
+      - name: 'Resolve Project Dependencies Using Dotnet'
+        shell: bash
+        run: |
+          pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
+          dotnet build --configuration Release --output ./output
+          popd
+
+      - name: 'Run Azure Functions Action'
+        uses: Azure/functions-action@v1
+        id: fa
+        with:
+          app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
+          package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
+          publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
 
       - name: Build And Deploy
         id: builddeploy
